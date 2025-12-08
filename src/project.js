@@ -20,4 +20,8 @@ export default class Project {
     updateName(newName) {
         this.name = newName;
     }
+
+    viewTodos() {
+        return this.todos;
+    }
 }

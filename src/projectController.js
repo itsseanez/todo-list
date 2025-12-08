@@ -1,4 +1,5 @@
 import Project from "./project";
+import Todo from "./todo";
 
 export default (() => {
     const projectArray = [];
@@ -89,6 +90,24 @@ export default (() => {
 
         // Attach edit functionality
         editBtn.addEventListener('click', () => editProject(projectDiv, project));
+
+        // Attach view functionality
+        viewBtn.addEventListener('click', () => {
+            const mainContent = document.getElementById('main-content');
+            mainContent.innerHTML = '';
+            console.log(project.viewTodos());
+            mainContent.innerHTML = `<h2>Todos for Project: ${project.name}</h2>`;
+
+            project.addTodo(new Todo('Sample Todo', 'This is a sample todo item.', '2024-12-31', 'High'));
+            project.addTodo(new Todo('me 2 Todo', 'This is a sample todo item.', '2024-12-31', 'High'));
+            project.viewTodos().forEach(todo => {
+                const todoElement = document.createElement('p');
+                todoElement.textContent = `Todo: ${todo.title}`;
+                
+                mainContent.appendChild(todoElement);
+            });
+        });
+
     }
 
     function editProject(projectDiv, project) {
