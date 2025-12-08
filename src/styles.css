@@ -90,7 +90,15 @@ input {
     margin-top: 20px;
 }
 
-#save-project-button {
+svg {
+    fill: var(--auxillary-color);
+    width: .5em;
+    height: .5em;
+    position: relative;
+    bottom : 12px;
+}
+
+.svg-button {
     background-color: var(--tertiary-color);
     color: var(--auxillary-color);
     text-align: center;
@@ -99,10 +107,11 @@ input {
 
 }
 
-svg {
-    fill: var(--auxillary-color);
-    width: .5em;
-    height: .5em;
-    position: relative;
-    bottom : 15px;
+.svg-button:hover {
+    background-color: var(--tertiary-color);
+}
+
+.svg-button:hover > svg{
+    background-color: var(--tertiary-color);
+    fill: var(--white-color);
 }

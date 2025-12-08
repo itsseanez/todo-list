@@ -4,13 +4,20 @@ export default class Project {
         this.todos = [];
         this.id = crypto.randomUUID();
     }
+
     addTodo(todo) {
         this.todos.push(todo);
     }
+
     removeTodo(index) {
         this.todos.splice(index, 1);
     }
+
     updateTodo(index, updatedTodo) {
         this.todos[index] = updatedTodo;
+    }
+
+    updateName(newName) {
+        this.name = newName;
     }
 }

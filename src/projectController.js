@@ -1,37 +1,98 @@
 import Project from "./project";
 
 export default (() => {
+    const projectArray = [];
     const addProjectButton = document.getElementById('add-project-button');
+    const projectList = document.getElementById('project-list');
+
+    // Event listener for adding a new project
     addProjectButton.addEventListener('click', addProjectHandler);
 
+    // --- FUNCTIONS ---
+
     function addProjectHandler() {
-        const projectList = document.getElementById('project-list');
+        // Create project container
         const projectDiv = document.createElement('div');
-        const inputProjectName = document.createElement('input');
-        const saveProjectButton = document.createElement('button');
-
-        saveProjectButton.id = 'save-project-button';
-
-        inputProjectName.setAttribute('type', 'text');
-        inputProjectName.setAttribute('placeholder', 'Project Name');
-        saveProjectButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>check-circle-outline</title><path d="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M12 20C7.59 20 4 16.41 4 12S7.59 4 12 4 20 7.59 20 12 16.41 20 12 20M16.59 7.58L10 14.17L7.41 11.59L6 13L10 17L18 9L16.59 7.58Z" /></svg>`;
-
-        projectDiv.appendChild(inputProjectName);
-        projectDiv.appendChild(saveProjectButton);
-
-        saveProjectButton.addEventListener('click', () => {
-            const projectName = inputProjectName.value.trim();
-            if (projectName !== '') {
-                const project = new Project(projectName);
-                projectDiv.textContent = project.name;
-                return project;
-            }
-        });
-
         projectDiv.classList.add('project');
 
+        // Create input + save button
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = 'Project Name';
+
+        const saveBtn = document.createElement('button');
+        saveBtn.classList.add('svg-button');
+        saveBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <title>save</title>
+                <path d="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M12 20C7.59 20 4 16.41 4 12S7.59 4 12 4 20 7.59 20 12 16.41 20 12 20M16.59 7.58L10 14.17L7.41 11.59L6 13L10 17L18 9L16.59 7.58Z"/>
+            </svg>`;
+
+        projectDiv.appendChild(input);
+        projectDiv.appendChild(saveBtn);
         projectList.appendChild(projectDiv);
+
+        // Save button click
+        saveBtn.addEventListener('click', () => {
+            const name = input.value.trim();
+            if (!name) return;
+
+            const project = new Project(name);
+            projectArray.push(project);
+            projectDiv.dataset.id = project.id;
+
+            // Clear and render project label + edit button
+            renderProject(projectDiv, project);
+        });
     }
 
-    return { addProjectHandler }
+    function renderProject(projectDiv, project) {
+        projectDiv.innerHTML = '';
+
+        const label = document.createElement('p');
+        label.textContent = project.name;
+
+        const editBtn = document.createElement('button');
+        editBtn.classList.add('svg-button', 'edit-project-button');
+        editBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <title>edit</title>
+                <path d="M18.13 12L19.39 10.74C19.83 10.3 20.39 10.06 21 10V9L15 3H5C3.89 3 3 3.89 3 5V19C3 20.1 3.89 21 5 21H11V19.13L11.13 19H5V5H12V12H18.13M14 4.5L19.5 10H14V4.5M19.13 13.83L21.17 15.87L15.04 22H13V19.96L19.13 13.83M22.85 14.19L21.87 15.17L19.83 13.13L20.81 12.15C21 11.95 21.33 11.95 21.53 12.15L22.85 13.47C23.05 13.67 23.05 14 22.85 14.19Z"/>
+            </svg>`;
+
+        projectDiv.appendChild(label);
+        projectDiv.appendChild(editBtn);
+
+        // Attach edit functionality
+        editBtn.addEventListener('click', () => editProject(projectDiv, project));
+    }
+
+    function editProject(projectDiv, project) {
+        const currentName = project.name;
+        projectDiv.innerHTML = '';
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = currentName;
+
+        const saveBtn = document.createElement('button');
+        saveBtn.classList.add('svg-button');
+        saveBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <title>save</title>
+                <path d="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M12 20C7.59 20 4 16.41 4 12S7.59 4 12 4 20 7.59 20 12 16.41 20 12 20M16.59 7.58L10 14.17L7.41 11.59L6 13L10 17L18 9L16.59 7.58Z"/>
+            </svg>`;
+
+        projectDiv.appendChild(input);
+        projectDiv.appendChild(saveBtn);
+
+        saveBtn.addEventListener('click', () => {
+            const newName = input.value.trim();
+            if (!newName) return;
+
+            project.name = newName;
+            renderProject(projectDiv, project);
+        });
+    }
+    return {projectArray};
 })();
