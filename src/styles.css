@@ -12,6 +12,7 @@
     padding: 0;
     box-sizing: border-box;
     font-family: var(--font-family);
+    height: min-content;
 }
 
 #app {
@@ -47,6 +48,11 @@ button:hover {
     background-color: var(--secondary-color);
 }
 
+.clicked {
+    background-color: var(--secondary-color);
+    cursor: default;
+}
+
 header {
     background-color: var(--primary-color);
     color: var(--white-color);
@@ -74,6 +80,17 @@ input {
 
 #main-content {
     padding: 3%;
+    overflow-y: auto;
+}
+
+#main-content .svg-button {
+    position: absolute;
+    bottom: -20px ;
+    right: 5px;
+}
+
+#main-content .svg-button:hover > svg{
+    fill: var(--primary-color);
 }
 
 .project {
@@ -90,6 +107,8 @@ input {
 
 .project-button-container {
     display: flex;
+    justify-content: start;
+    align-items: center;
 }
 
 #project-list {
@@ -107,7 +126,7 @@ svg {
 }
 
 .svg-button {
-    background-color: var(--tertiary-color);
+    background-color: inherit;
     color: var(--auxillary-color);
     text-align: center;
     font-size: 5rem;
@@ -116,10 +135,21 @@ svg {
 }
 
 .svg-button:hover {
-    background-color: var(--tertiary-color);
+    background-color: inherit;
 }
 
 .svg-button:hover > svg{
-    background-color: var(--tertiary-color);
+    background-color: inherit;
     fill: var(--white-color);
+}
+
+.todo-item {
+    border: 1px solid var(--secondary-color);
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: var(--tertiary-color);
+    position: relative;
+    overflow: hidden;
+    line-height: 2rem;
 }

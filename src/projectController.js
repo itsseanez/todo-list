@@ -95,15 +95,56 @@ export default (() => {
         viewBtn.addEventListener('click', () => {
             const mainContent = document.getElementById('main-content');
             mainContent.innerHTML = '';
-            console.log(project.viewTodos());
-            mainContent.innerHTML = `<h2>Todos for Project: ${project.name}</h2>`;
 
             project.addTodo(new Todo('Sample Todo', 'This is a sample todo item.', '2024-12-31', 'High'));
             project.addTodo(new Todo('me 2 Todo', 'This is a sample todo item.', '2024-12-31', 'High'));
+            console.log(project.viewTodos());
             project.viewTodos().forEach(todo => {
-                const todoElement = document.createElement('p');
-                todoElement.textContent = `Todo: ${todo.title}`;
-                
+                const todoElement = document.createElement('div');
+                const todoTitle = document.createElement('h3');
+                todoTitle.textContent = todo.title;
+                todoElement.appendChild(todoTitle);
+
+                const todoDescription = document.createElement('p');
+                todoDescription.textContent = `Description: ${todo.description}`;
+                todoElement.appendChild(todoDescription);
+
+                const todoDueDate = document.createElement('p');
+                todoDueDate.textContent = `Due Date: ${todo.dueDate}`;
+                todoElement.appendChild(todoDueDate);
+
+                const todoPriority = document.createElement('p');
+                todoPriority.textContent = `Priority: ${todo.priority}`;
+                todoElement.appendChild(todoPriority);
+
+                const todoCompletion = document.createElement('button');
+                todoCompletion.textContent = todo.isCompleted ? 'Completed' : 'Not Completed';
+                if (todo.isCompleted) {
+                    todoCompletion.classList.add('clicked');
+                }
+                todoCompletion.addEventListener('click', () => {
+                    todo.toggleCompletion();
+                    todoCompletion.textContent = todo.isCompleted ? 'Completed' : 'Not Completed';
+                    todoCompletion.classList.toggle('clicked');
+                });
+
+                const delBtn = document.createElement('button');
+                delBtn.classList.add('svg-button');
+                delBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>delete-forever-outline</title><path d="M14.12,10.47L12,12.59L9.87,10.47L8.46,11.88L10.59,14L8.47,16.12L9.88,17.53L12,15.41L14.12,17.53L15.53,16.12L13.41,14L15.53,11.88L14.12,10.47M15.5,4L14.5,3H9.5L8.5,4H5V6H19V4H15.5M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M8,9H16V19H8V9Z" /></svg>`;
+                delBtn.addEventListener('click', () => {
+                    project.removeTodo(project.todos.indexOf(todo));
+                    mainContent.removeChild(todoElement);
+                });
+                todoElement.appendChild(delBtn);
+
+                todoElement.appendChild(todoCompletion);
+                todoElement.classList.add('todo-item');
+
+                const btnDiv = document.createElement('div');
+                btnDiv.classList.add('project-button-container');
+                todoElement.appendChild(delBtn);
+                todoElement.appendChild(todoCompletion);
+                todoElement.appendChild(btnDiv);
                 mainContent.appendChild(todoElement);
             });
         });
