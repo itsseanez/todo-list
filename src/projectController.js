@@ -3,6 +3,7 @@ import Todo from "./todo";
 
 export default (() => {
     const projectArray = [];
+    let currentProject = null;
     const addProjectButton = document.getElementById('add-project-button');
     const projectList = document.getElementById('project-list');
 
@@ -10,6 +11,11 @@ export default (() => {
     addProjectButton.addEventListener('click', addProjectHandler);
 
     // --- FUNCTIONS ---
+
+    //return current project based on viewed project
+    function getCurrentProject() {
+        return currentProject;
+    }
 
     function addProjectHandler() {
         // Create project container
@@ -53,16 +59,21 @@ export default (() => {
             if (!name) return;
 
             const project = new Project(name);
+            currentProject = project;
             projectArray.push(project);
             // Set project div data-id
             projectDiv.dataset.id = project.id;
 
             // Clear and render project label + edit button
             renderProject(projectDiv, project);
+
         });
     }
 
+
     function renderProject(projectDiv, project) {
+        //return current project based on viewed project
+
         projectDiv.innerHTML = '';
 
         const label = document.createElement('p');
@@ -93,12 +104,9 @@ export default (() => {
 
         // Attach view functionality
         viewBtn.addEventListener('click', () => {
+            console.log('Viewing project:', project.name);
             const mainContent = document.getElementById('main-content');
-            mainContent.innerHTML = '';
 
-            project.addTodo(new Todo('Sample Todo', 'This is a sample todo item.', '2024-12-31', 'High'));
-            project.addTodo(new Todo('me 2 Todo', 'This is a sample todo item.', '2024-12-31', 'High'));
-            console.log(project.viewTodos());
             project.viewTodos().forEach(todo => {
                 const todoElement = document.createElement('div');
                 const todoTitle = document.createElement('h3');
@@ -178,5 +186,5 @@ export default (() => {
             renderProject(projectDiv, project);
         });
     }
-    return { projectArray };
+    return { getCurrentProject };
 })();
