@@ -1,6 +1,5 @@
 import Project from "./project";
 import todoController from "./todoController";
-import todo from "./todo.js";
 
 export default (() => {
     const projectArray = [];

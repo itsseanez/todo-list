@@ -1,6 +1,5 @@
 import Todo from './todo.js';
 import projectController from './projectController.js';
-import Project from './project.js';
 
 export default (() => {
     let dialog = document.querySelector('dialog');
@@ -14,7 +13,6 @@ export default (() => {
     });
 
     function openTodoForm() {
-        //dialog = document.querySelector('dialog');
         dialog.showModal();
     }
 
@@ -28,7 +26,6 @@ export default (() => {
         const description = document.getElementById('description').value;
         const dueDate = document.getElementById('due-date').value;
         const priority = document.getElementById('priority').value;
-        //const newTodo = new Todo(title, description, dueDate, priority, false, projectController.getCurrentProject().id);
 
         const project = projectController.getCurrentProject();
         if (project === null) {
