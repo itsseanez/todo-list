@@ -1,5 +1,6 @@
 import Project from "./project";
-import Todo from "./todo";
+import todoController from "./todoController";
+import todo from "./todo.js";
 
 export default (() => {
     const projectArray = [];
@@ -48,24 +49,25 @@ export default (() => {
         projectDiv.appendChild(btnDiv);
         projectList.appendChild(projectDiv);
 
-        // Delete button click
+        // Delete project button click
         delBtn.addEventListener('click', () => {
             projectList.removeChild(projectDiv);
         });
 
-        // Save button click
+        // Save project button click
         saveBtn.addEventListener('click', () => {
             const name = input.value.trim();
             if (!name) return;
 
             const project = new Project(name);
+            projectDiv.dataset.id = project.id;
+
             currentProject = project;
             projectArray.push(project);
-            // Set project div data-id
-            projectDiv.dataset.id = project.id;
 
             // Clear and render project label + edit button
             renderProject(projectDiv, project);
+            todoController.renderTodos(project);
 
         });
     }
@@ -73,7 +75,6 @@ export default (() => {
 
     function renderProject(projectDiv, project) {
         //return current project based on viewed project
-
         projectDiv.innerHTML = '';
 
         const label = document.createElement('p');
@@ -104,57 +105,20 @@ export default (() => {
 
         // Attach view functionality
         viewBtn.addEventListener('click', () => {
-            console.log('Viewing project:', project.name);
-            const mainContent = document.getElementById('main-content');
+            currentProject = project;
 
-            project.viewTodos().forEach(todo => {
-                const todoElement = document.createElement('div');
-                const todoTitle = document.createElement('h3');
-                todoTitle.textContent = todo.title;
-                todoElement.appendChild(todoTitle);
+            // Highlight active project
 
-                const todoDescription = document.createElement('p');
-                todoDescription.textContent = `Description: ${todo.description}`;
-                todoElement.appendChild(todoDescription);
-
-                const todoDueDate = document.createElement('p');
-                todoDueDate.textContent = `Due Date: ${todo.dueDate}`;
-                todoElement.appendChild(todoDueDate);
-
-                const todoPriority = document.createElement('p');
-                todoPriority.textContent = `Priority: ${todo.priority}`;
-                todoElement.appendChild(todoPriority);
-
-                const todoCompletion = document.createElement('button');
-                todoCompletion.textContent = todo.isCompleted ? 'Completed' : 'Not Completed';
-                if (todo.isCompleted) {
-                    todoCompletion.classList.add('clicked');
+            viewBtn.parentElement.parentElement.classList.add('active-project');
+            const projects = document.querySelectorAll('.project');
+            projects.forEach(proj => {
+                if (proj.dataset.id !== viewBtn.parentElement.parentElement.dataset.id) {
+                    proj.classList.remove('active-project');
                 }
-                todoCompletion.addEventListener('click', () => {
-                    todo.toggleCompletion();
-                    todoCompletion.textContent = todo.isCompleted ? 'Completed' : 'Not Completed';
-                    todoCompletion.classList.toggle('clicked');
-                });
-
-                const delBtn = document.createElement('button');
-                delBtn.classList.add('svg-button');
-                delBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>delete-forever-outline</title><path d="M14.12,10.47L12,12.59L9.87,10.47L8.46,11.88L10.59,14L8.47,16.12L9.88,17.53L12,15.41L14.12,17.53L15.53,16.12L13.41,14L15.53,11.88L14.12,10.47M15.5,4L14.5,3H9.5L8.5,4H5V6H19V4H15.5M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M8,9H16V19H8V9Z" /></svg>`;
-                delBtn.addEventListener('click', () => {
-                    project.removeTodo(project.todos.indexOf(todo));
-                    mainContent.removeChild(todoElement);
-                });
-                todoElement.appendChild(delBtn);
-
-                todoElement.appendChild(todoCompletion);
-                todoElement.classList.add('todo-item');
-
-                const btnDiv = document.createElement('div');
-                btnDiv.classList.add('project-button-container');
-                todoElement.appendChild(delBtn);
-                todoElement.appendChild(todoCompletion);
-                todoElement.appendChild(btnDiv);
-                mainContent.appendChild(todoElement);
             });
+
+            todoController.renderTodos(project);
+
         });
 
     }
@@ -177,6 +141,22 @@ export default (() => {
 
         projectDiv.appendChild(input);
         projectDiv.appendChild(saveBtn);
+
+        const delBtn = document.createElement('button');
+        delBtn.classList.add('svg-button');
+        delBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>delete-forever-outline</title><path d="M14.12,10.47L12,12.59L9.87,10.47L8.46,11.88L10.59,14L8.47,16.12L9.88,17.53L12,15.41L14.12,17.53L15.53,16.12L13.41,14L15.53,11.88L14.12,10.47M15.5,4L14.5,3H9.5L8.5,4H5V6H19V4H15.5M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M8,9H16V19H8V9Z" /></svg>`;
+
+        const btnDiv = document.createElement('div');
+        btnDiv.classList.add('project-button-container');
+        btnDiv.appendChild(saveBtn);
+        btnDiv.appendChild(delBtn);
+
+        delBtn.addEventListener('click', () => {
+            projectList.removeChild(projectDiv);
+        });
+
+        projectDiv.appendChild(input);
+        projectDiv.appendChild(btnDiv);
 
         saveBtn.addEventListener('click', () => {
             const newName = input.value.trim();
