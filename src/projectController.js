@@ -12,6 +12,14 @@ export default (() => {
     addProjectButton.addEventListener('click', addProjectHandler);
 
     // --- FUNCTIONS ---
+    //Create new project and add to project list
+    function addNewProject(name) {
+        const project = new Project(name);
+        projectArray.push(project);
+        currentProject = project;
+        
+        return project;
+    }
 
     //return current project based on viewed project
     function getCurrentProject() {
@@ -63,10 +71,20 @@ export default (() => {
             projectDiv.dataset.id = project.id;
 
             currentProject = project;
+
+            projectDiv.classList.add('active-project');
+            const projects = document.querySelectorAll('.project');
+            projects.forEach(proj => {
+                if (proj.dataset.id !== projectDiv.dataset.id) {
+                    proj.classList.remove('active-project');
+                }
+            });
+
             projectArray.push(project);
 
             // Clear and render project label + edit button
             renderProject(projectDiv, project);
+            console.log('Current Project:', currentProject);
             todoController.renderTodos(project);
 
         });
@@ -118,9 +136,8 @@ export default (() => {
             });
 
             todoController.renderTodos(project);
-
         });
-
+        return projectDiv;
     }
 
     function editProject(projectDiv, project) {
@@ -166,5 +183,5 @@ export default (() => {
             renderProject(projectDiv, project);
         });
     }
-    return { getCurrentProject };
+    return { getCurrentProject, addNewProject, renderProject };
 })();

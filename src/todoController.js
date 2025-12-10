@@ -1,5 +1,6 @@
 import Todo from './todo.js';
 import projectController from './projectController.js';
+import Project from './project.js';
 
 export default (() => {
     let dialog = document.querySelector('dialog');
@@ -27,12 +28,42 @@ export default (() => {
         const description = document.getElementById('description').value;
         const dueDate = document.getElementById('due-date').value;
         const priority = document.getElementById('priority').value;
-        const newTodo = new Todo(title, description, dueDate, priority, false, projectController.getCurrentProject().id);
+        //const newTodo = new Todo(title, description, dueDate, priority, false, projectController.getCurrentProject().id);
 
         const project = projectController.getCurrentProject();
-        project.addTodo(newTodo);
+        if (project === null) {
+            let defaultProject = projectController.addNewProject('Default Project')
 
-        renderTodos(project);
+            defaultProject.addTodo(new Todo(title, description, dueDate, priority, false));
+            const newProjectDiv = document.createElement('div');
+            newProjectDiv.classList.add('project', 'active-project');
+            newProjectDiv.dataset.id = defaultProject.id;
+            
+            const projectList = document.getElementById('project-list');
+            
+            projectList.appendChild(projectController.renderProject(newProjectDiv, defaultProject));
+
+            renderTodos(defaultProject);
+
+            return;
+
+        } else {
+            project.addTodo(new Todo(title, description, dueDate, priority, false)  );
+            const newProjectDiv = document.createElement('div');
+            newProjectDiv.classList.add('project', 'active-project');
+            
+            const projects = document.querySelectorAll('.project');
+            projects.forEach(proj => {
+                if (proj.dataset.id !== viewBtn.parentElement.parentElement.dataset.id) {
+                    proj.classList.remove('active-project');
+                }
+            });
+            
+            const projectList = document.getElementById('project-list');
+
+            projectList.appendChild(projectController.renderProject(newProjectDiv, defaultProject));
+            renderTodos(project);
+        }
 
     });
 
